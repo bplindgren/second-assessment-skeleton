@@ -1,8 +1,12 @@
 package com.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.entity.User;
 import com.service.UserService;
 
 @RestController
@@ -12,7 +16,7 @@ public class UsersController {
 	private UserService userService;
 
 	public UsersController(UserService userService) {
-		this.setUserService(userService);
+		this.userService = userService;
 	}
 
 	public UserService getUserService() {
@@ -23,11 +27,9 @@ public class UsersController {
 		this.userService = userService;
 	}
 	
-	
-	
-//	@GetMapping
-//	public List<User> getAll() {
-//		return userService.getAll();
-//	}
+	@GetMapping
+	public List<User> findAll() {
+		return userService.findAll();
+	}
 
 }

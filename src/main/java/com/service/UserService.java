@@ -1,8 +1,11 @@
 package com.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.entity.User;
 import com.repository.UserRepository;
 
 @Service
@@ -12,7 +15,7 @@ public class UserService {
 	private UserRepository userRepository;
 
 	public UserService(UserRepository userRepo) {
-		this.setUserRepository(userRepo);
+		this.userRepository = userRepo;
 	}
 
 	public UserRepository getUserRepository() {
@@ -23,7 +26,9 @@ public class UserService {
 		this.userRepository = userRepository;
 	}
 
-	
+	public List<User> findAll() {
+		return userRepository.findAll();
+	}
 	
 	
 }
