@@ -24,7 +24,7 @@ public class Profile {
 	private String email;
 	
 	@Column(nullable = true)
-	private int phone;
+	private String phone;
 	
 	public long getId() {
 		return id;
@@ -59,11 +59,11 @@ public class Profile {
 		this.email = email;
 	}
 
-	public int getPhone() {
+	public String getPhone() {
 		return phone;
 	}
 
-	public void setPhone(int phone) {
+	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 	
