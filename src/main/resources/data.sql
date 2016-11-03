@@ -1,0 +1,1 @@
+insert into twitter.user (id, username, profile_id, active) values (1, 'gocubsgo61', 1, true);
