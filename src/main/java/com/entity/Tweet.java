@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -25,7 +26,10 @@ public class Tweet {
 	@ManyToOne
 	@JoinColumn(name="user_id", nullable=false)
 	private User author;
+	
 	private Date posted;
+	
+	@Column(nullable = true)
 	private String content;
 	
 	@OneToOne
@@ -33,6 +37,7 @@ public class Tweet {
 	
 	@OneToOne
 	private Tweet repostOf;
+	
 	private boolean active;
 	
 	@ManyToMany(targetEntity = Tag.class, cascade = { CascadeType.ALL })

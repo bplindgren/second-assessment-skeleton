@@ -9,7 +9,21 @@ import com.service.UserService;
 @RequestMapping("users")
 public class UsersController {
 	
-	UserService userService;
+	private UserService userService;
+
+	public UsersController(UserService userService) {
+		this.setUserService(userService);
+	}
+
+	public UserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+	
+	
 	
 //	@GetMapping
 //	public List<User> getAll() {

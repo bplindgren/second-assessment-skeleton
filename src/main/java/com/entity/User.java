@@ -1,8 +1,8 @@
 package com.entity;
 
+import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -24,14 +24,14 @@ public class User {
 	
 	@OneToOne
 	@JoinColumn
-
 	private Profile profile;
 
-	private String joined;
+	private Date joined;
 	
 	@OneToOne
 	@JoinColumn
 	private Credentials credentials;
+	
 	private boolean active;
 	
 	@OneToMany(mappedBy="author")  
@@ -60,15 +60,15 @@ public class User {
 	public void setProfile(Profile profile) {
 		this.profile = profile;
 	}
-
-	public String getJoined() {
+	
+	public Date getJoined() {
 		return joined;
 	}
 
-	public void setJoined(String joined) {
+	public void setJoined(Date joined) {
 		this.joined = joined;
 	}
-	
+
 	public Credentials getCredentials() {
 		return credentials;
 	}

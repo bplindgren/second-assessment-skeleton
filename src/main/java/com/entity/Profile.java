@@ -1,5 +1,6 @@
 package com.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,9 +14,16 @@ public class Profile {
 	@GeneratedValue
 	private long id;
 	
+	@Column(nullable = true)
 	private String firstName;
+	
+	@Column(nullable = true)
 	private String lastName;
+	
+	
 	private String email;
+	
+	@Column(nullable = true)
 	private int phone;
 	
 	public long getId() {
@@ -24,6 +32,7 @@ public class Profile {
 
 	public void setId(long id) {
 		this.id = id;
+		
 	}
 
 	public String getFirstName() {
