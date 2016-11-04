@@ -55,7 +55,9 @@ public class UserService {
 	@Transactional
 	public User updateUser(String username, User updatedUser) throws Exception {
 		User user = findByUsername(username);
-		user = updatedUser;
+		user.setUsername(updatedUser.getUsername());
+		user.setCredentials(updatedUser.getCredentials());
+		user.setProfile(updatedUser.getProfile());
 		return userRepository.save(user);
 	}
 	
