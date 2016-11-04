@@ -20,8 +20,8 @@ public class Tag {
 	@GeneratedValue
 	private long id;
 	private String label;
-	private Date firstUsed;
-	private Date lastUsed;
+	private String firstUsed;
+	private String lastUsed;
 	
 	@ManyToMany(targetEntity = Tweet.class, cascade = { CascadeType.ALL })
 	@JoinTable(name = "tags_tweets", 
@@ -45,21 +45,20 @@ public class Tag {
 		this.label = label;
 	}
 
-	public Date getFirstUsed() {
+	public String getFirstUsed() {
 		return firstUsed;
 	}
 
-	public void setFirstUsed(Date firstUsed) {
+	public void setFirstUsed(String firstUsed) {
 		this.firstUsed = firstUsed;
 	}
 
-	public Date getLastUsed() {
+	public String getLastUsed() {
 		return lastUsed;
 	}
 
-	public void setLastUsed(Date lastUsed) {
+	public void setLastUsed(String lastUsed) {
 		this.lastUsed = lastUsed;
 	}
-	
-	
+
 }

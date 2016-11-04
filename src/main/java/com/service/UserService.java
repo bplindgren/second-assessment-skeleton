@@ -30,5 +30,9 @@ public class UserService {
 		return userRepository.findAll();
 	}
 	
+	public User findByUsername(String username) throws NullPointerException {
+		return userRepository.findByUsername(username);
+	}
+	
 	
 }

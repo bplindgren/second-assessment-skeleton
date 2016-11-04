@@ -6,14 +6,15 @@ import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.entity.User;
+import com.entity.Tag;
+
 
 @Transactional
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface TagRepository extends JpaRepository<Tag, Long> {
 	
-	List<User> findAll();
+	List<Tag> findAll();
 	
-	User findByUsername(String username);
-	
+	Tag findByLabel(String label);
 	
 }
+

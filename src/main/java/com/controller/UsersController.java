@@ -3,6 +3,7 @@ package com.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,5 +32,13 @@ public class UsersController {
 	public List<User> findAll() {
 		return userService.findAll();
 	}
+
+	@GetMapping("/@{username}")
+	public User findByUsername(@PathVariable String username) {
+		username = '@' + username;
+		
+		return userService.findByUsername(username);
+	}
+	
 
 }
