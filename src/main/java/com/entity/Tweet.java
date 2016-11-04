@@ -25,11 +25,11 @@ public class Tweet {
 	private long id;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="user_id", nullable=false)
+	@JoinColumn(nullable=false)
 	@JsonIgnore
 	private User author;
 	
-	private String posted;
+	private long posted;
 	
 	private String content;
 	
@@ -55,12 +55,12 @@ public class Tweet {
 		this.id = id;
 	}
 
-	public String getPosted() {
+	public long getPosted() {
 		return posted;
 	}
 
-	public void setPosted(String posted) {
-		this.posted = posted;
+	public void setPosted(long l) {
+		this.posted = l;
 	}
 
 	public User getAuthor() {

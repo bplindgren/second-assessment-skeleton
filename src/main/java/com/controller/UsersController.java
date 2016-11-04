@@ -58,4 +58,8 @@ public class UsersController {
     	return userService.deleteUser(username, credentials);
     }
 
+    @PostMapping("/@{username}/follow")
+    public User createFollowing(@PathVariable String username, @RequestBody Credentials credentials) throws Exception {
+    	return userService.createFollowing(username, credentials);
+    }
 }

@@ -64,15 +64,30 @@ public class UserService {
 	@Transactional
 	public User deleteUser(String username, Credentials credentials) {
     	User user = userRepository.findByUsername(username);
-    	System.out.println(user.getCredentials().getPassword());
-    	System.out.println(credentials.getPassword());
     	
     	if (user.getCredentials().getPassword().equals(credentials.getPassword())) {
     		user.setActive(false);
-    		userRepository.saveAndFlush(user);
+    		userRepository.save(user);
     		return user;
-    	}
-    	return null;
-    }
+    	} 
+    	return user;
+	}
 	
+	@Transactional
+	public User createFollowing(String username, Credentials credentials) throws Exception {
+    	User user = this.findByUsername(username);
+    	System.out.println(credentials.getUsername());
+    	User userToFollow = this.findByUsername(credentials.getUsername());
+    	
+    	System.out.println(user);
+    	System.out.println(userToFollow);
+    	
+    	user.getFollowers().add(userToFollow);
+    	userToFollow.getFollows().add(user);
+    	
+    	userRepository.saveAndFlush(userToFollow);
+    	return userRepository.saveAndFlush(user);
+    	
+    }
+
 }

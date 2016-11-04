@@ -13,8 +13,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
 
 	@Id
@@ -34,11 +36,18 @@ public class User {
 	@JoinColumn
 	private Credentials credentials;
 	
-	
 	private boolean active;
 	
 	@OneToMany(mappedBy="author")  
 	private Set<Tweet> tweets;
+	
+	@OneToMany
+	@JsonIgnore
+	private Set<User> follows;
+	
+	@OneToMany
+	@JsonIgnore
+	private Set<User> followers;
 
 	public long getId() {
 		return id;
@@ -95,5 +104,23 @@ public class User {
 	public void setTweets(Set<Tweet> tweets) {
 		this.tweets = tweets;
 	}
+
+	public Set<User> getFollows() {
+		return follows;
+	}
+
+	public void setFollows(Set<User> follows) {
+		this.follows = follows;
+	}
+
+	public Set<User> getFollowers() {
+		return followers;
+	}
+
+	public void setFollowers(Set<User> followers) {
+		this.followers = followers;
+	}
+
+	
 	
 }
