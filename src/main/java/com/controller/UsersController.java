@@ -2,13 +2,16 @@ package com.controller;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.entity.Credentials;
 import com.entity.User;
 import com.service.UserService;
 
@@ -42,14 +45,17 @@ public class UsersController {
 
 	@GetMapping("/@{username}")
 	public User findByUsername(@PathVariable String username) throws Exception {
-		username = '@' + username;
 		return userService.findByUsername(username);
 	}
 	
+    @PatchMapping("/@{username}")
+    public User updateUser(@PathVariable String username, @RequestBody User updatedUser) throws Exception {
+    	return userService.updateUser(username, updatedUser);
+    }
+    
+    @DeleteMapping("/@{username}")
+    public User deleteUser(@PathVariable String username, @RequestBody Credentials credentials) {
+    	return userService.deleteUser(username, credentials);
+    }
 
 }
-
-//{
-//"credentials":{"username":"@mikesmith","password":"1234"},
-//"profile":{"id":2,"firstName":"mike","lastName":"smith","email":"mikesmith@gmail.com","phone":"3128496320"}
-//}

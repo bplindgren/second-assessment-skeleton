@@ -19,7 +19,7 @@ public class ValidateController {
 		this.usersController = usersController;
 	}
 
-	@GetMapping("/tag/exists/{label}")
+	@GetMapping("tag/exists/{label}")
 	public boolean tagExists(@PathVariable String label) {
 		return (this.tagsController.findByLabel(label) != null) ? true : false;
 	}

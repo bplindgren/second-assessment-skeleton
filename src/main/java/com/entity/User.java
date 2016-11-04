@@ -1,10 +1,12 @@
 package com.entity;
 
-import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -16,21 +18,22 @@ import javax.persistence.Table;
 public class User {
 
 	@Id
-	@GeneratedValue
-
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
+	@Column(unique=true)
 	private String username;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn
 	private Profile profile;
 
-	private Date joined;
+	private long joined;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn
 	private Credentials credentials;
+	
 	
 	private boolean active;
 	
@@ -61,12 +64,12 @@ public class User {
 		this.profile = profile;
 	}
 	
-	public Date getJoined() {
+	public long getJoined() {
 		return joined;
 	}
 
-	public void setJoined(Date joined) {
-		this.joined = joined;
+	public void setJoined(long l) {
+		this.joined = l;
 	}
 
 	public Credentials getCredentials() {
