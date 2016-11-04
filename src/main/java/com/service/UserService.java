@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.controller.ValidateController;
 import com.entity.User;
 import com.repository.UserRepository;
 
@@ -13,9 +14,11 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
+	private ValidateController validateController;
 
-	public UserService(UserRepository userRepo) {
+	public UserService(UserRepository userRepo, ValidateController validateController) {
 		this.userRepository = userRepo;
+		this.validateController = validateController;
 	}
 
 	public UserRepository getUserRepository() {
@@ -30,9 +33,19 @@ public class UserService {
 		return userRepository.findAll();
 	}
 	
-	public User findByUsername(String username) throws NullPointerException {
+	public User findByUsername(String username) throws Exception {
 		return userRepository.findByUsername(username);
 	}
 	
+	public User createUser(User newUser) throws Exception {
+		String username = newUser.getCredentials().getUsername();
+		if (this.validateController.usernameAvailable(username) == false) {
+			return userRepository.saveAndFlush(newUser);
+		} else if (this.validateController.usernameExists(username) == true) {
+			// update the user's active field to true
+		} else {
+			return newUser;
+		}
+	}
 	
 }

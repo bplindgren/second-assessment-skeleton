@@ -24,14 +24,16 @@ public class ValidateController {
 		return (this.tagsController.findByLabel(label) != null) ? true : false;
 	}
 	
+	// Active == true
 	@GetMapping("username/exists/@{username}")
-	public boolean usernameExists(@PathVariable String username) {
+	public boolean usernameExists(@PathVariable String username) throws Exception {
 		User user = this.usersController.findByUsername(username);
 		return (user != null && (user.isActive() == true)) ? true : false;
 	}
 	
+	// Is the username available?
 	@GetMapping("username/available/@{username}")
-	public boolean usernameAvailable(@PathVariable String username) {
-		return (this.usersController.findByUsername(username) != null) ? true: false;
+	public boolean usernameAvailable(@PathVariable String username) throws Exception {
+		return (this.usersController.findByUsername(username) == null) ? true: false;
 	}
 }
