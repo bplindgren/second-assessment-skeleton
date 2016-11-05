@@ -1,5 +1,6 @@
 package com.entity;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -41,19 +42,22 @@ public class User {
 	private boolean active;
 	
 	@OneToMany(mappedBy="author")  
-	private Set<Tweet> tweets;
+	private List<Tweet> tweets;
 	
 	@ManyToMany
 	@JoinTable(name = "followings", 
 	 			joinColumns = { @JoinColumn(name = "follower_id") }, 
 	 			inverseJoinColumns = { @JoinColumn(name = "following_id") })
-	private Set<User> follows;
+	private Set<User> following;
+	
+	@ManyToMany(mappedBy="following")
+	private Set<User> followers;
 	
 	@ManyToMany
-	@JoinTable(name = "followings", 
-	 			joinColumns = { @JoinColumn(name = "id") }, 
-	 			inverseJoinColumns = { @JoinColumn(name = "follower_id") })
-	private Set<User> followers;
+	@JoinTable(name = "likes", 
+	 			joinColumns = { @JoinColumn(name = "liker_id") }, 
+	 			inverseJoinColumns = { @JoinColumn(name = "tweet_id") })
+	private Set<Tweet> likedTweets;
 
 	public long getId() {
 		return id;
@@ -103,21 +107,21 @@ public class User {
 		this.active = active;
 	}
 	
-	public Set<Tweet> getTweets() {
+	public List<Tweet> getTweets() {
 		return tweets;
 	}
 
-	public void setTweets(Set<Tweet> tweets) {
+	public void setTweets(List<Tweet> tweets) {
 		this.tweets = tweets;
 	}
 
 	@JsonIgnore
-	public Set<User> getFollows() {
-		return follows;
+	public Set<User> getFollowing() {
+		return following;
 	}
 
-	public void setFollows(Set<User> follows) {
-		this.follows = follows;
+	public void setFollowing(Set<User> following) {
+		this.following = following;
 	}
 
 	@JsonIgnore
@@ -129,6 +133,13 @@ public class User {
 		this.followers = followers;
 	}
 
-	
+	@JsonIgnore
+	public Set<Tweet> getLikedTweets() {
+		return likedTweets;
+	}
+
+	public void setLikedTweets(Set<Tweet> likedTweets) {
+		this.likedTweets = likedTweets;
+	}
 	
 }

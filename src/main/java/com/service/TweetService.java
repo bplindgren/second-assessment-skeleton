@@ -2,6 +2,7 @@ package com.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,6 +66,32 @@ public class TweetService {
 		if (tweet.getAuthor().getCredentials().getPassword().equals(credentials.getPassword())) {
 			tweet.setActive(false);
 			return tweetRepo.saveAndFlush(tweet);
+		} else {
+			return null;
+		}
+	}
+	
+	public Tweet createLike(long id, Credentials credentials) {
+		Tweet tweet = findById(id);
+		User user = userRepo.findByCredentialsUsernameAndCredentialsPassword(credentials.getUsername(), credentials.getPassword());
+		
+		if (tweet != null && user != null) {
+			tweet.getLikers().add(user);
+			user.getLikedTweets().add(tweet);
+			
+			tweetRepo.saveAndFlush(tweet);
+			userRepo.saveAndFlush(user);
+			
+			return tweet;
+		} else {
+			return null;
+		}
+	}
+	
+	public Set<User> getLikers(long id) {
+		Tweet tweet = tweetRepo.findByIdAndActiveTrue(id);
+		if (tweet != null) {
+			return tweet.getLikers();
 		} else {
 			return null;
 		}

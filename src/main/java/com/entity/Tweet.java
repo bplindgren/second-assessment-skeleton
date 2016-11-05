@@ -1,5 +1,6 @@
 package com.entity;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -40,12 +41,12 @@ public class Tweet {
 	
 	private boolean active;
 	
-	@ManyToMany(targetEntity = Tag.class, cascade = { CascadeType.ALL })
-	@JoinTable(name = "tags_tweets", 
-				joinColumns = { @JoinColumn(name = "tweet_id") }, 
-				inverseJoinColumns = { @JoinColumn(name = "tag_id") })
+	@ManyToMany(mappedBy="tweets")
 	private Set<Tag> tags;
 
+	@ManyToMany(mappedBy="likedTweets")
+	private Set<User> likers;
+	
 	public long getId() {
 		return id;
 	}
@@ -101,6 +102,15 @@ public class Tweet {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	@JsonIgnore
+	public Set<User> getLikers() {
+		return likers;
+	}
+
+	public void setLikers(Set<User> likers) {
+		this.likers = likers;
 	}
 	
 }

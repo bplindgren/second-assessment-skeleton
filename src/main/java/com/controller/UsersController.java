@@ -1,6 +1,8 @@
 package com.controller;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.entity.Credentials;
+import com.entity.Tweet;
 import com.entity.User;
 import com.service.UserService;
 
@@ -68,17 +71,21 @@ public class UsersController {
     	userService.deleteFollowing(username, credentials);
     }
     
+    @GetMapping("/@{username}/tweets")
+    public List<Tweet> getTweets(@PathVariable String username) throws Exception {
+    	List<Tweet> tweets = userService.getTweets(username);
+    	Collections.reverse(tweets);
+    	return tweets;
+    }
+    
     @GetMapping("/@{username}/followers")
-    public List<User> getFollowers(@PathVariable String username) throws Exception {
+    public Set<User> getFollowers(@PathVariable String username) throws Exception {
     	return userService.getFollowers(username);
     }
     
-//    @GetMapping("/@{username}/following")
-//    public List<User> getFollowing(@PathVariable String username) throws Exception {
-//    	return userService.getFollowing(username);
-//    }
-      
-    
-    
+    @GetMapping("/@{username}/following")
+    public Set<User> getFollowing(@PathVariable String username) throws Exception {
+    	return userService.getFollowing(username);
+    }
     
 }

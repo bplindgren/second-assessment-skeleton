@@ -2,6 +2,7 @@ package com.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.entity.Credentials;
+import com.entity.Tweet;
 import com.entity.User;
 import com.repository.UserRepository;
 
@@ -79,7 +81,7 @@ public class UserService {
     	User userToFollow = this.findByUsername(credentials.getUsername());
     	
     	user.getFollowers().add(userToFollow);
-    	userToFollow.getFollows().add(user);
+    	userToFollow.getFollowing().add(user);
     	
     	userRepository.saveAndFlush(user);
     	userRepository.saveAndFlush(userToFollow);
@@ -92,15 +94,22 @@ public class UserService {
 		User userToUnfollow = this.findByUsername(credentials.getUsername());
 		
 		user.getFollowers().remove(userToUnfollow);
-		userToUnfollow.getFollows().remove(user);
+		userToUnfollow.getFollowing().remove(user);
 		
 		userRepository.saveAndFlush(user);
 		userRepository.saveAndFlush(userToUnfollow);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<User> getFollowers(String username) throws Exception {
-		return (List<User>) findByUsername(username).getFollowers();
+	public List<Tweet> getTweets(String username) throws Exception {
+		return findByUsername(username).getTweets();
+	}
+	
+	public Set<User> getFollowing(String username) throws Exception {
+		return findByUsername(username).getFollowing();
+	}
+	
+	public Set<User> getFollowers(String username) throws Exception {
+		return findByUsername(username).getFollowers();
 	}
 
 }
