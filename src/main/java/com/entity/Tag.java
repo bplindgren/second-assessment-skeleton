@@ -1,9 +1,7 @@
 package com.entity;
 
-import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -20,14 +18,24 @@ public class Tag {
 	@GeneratedValue
 	private long id;
 	private String label;
-	private String firstUsed;
-	private String lastUsed;
+	private long firstUsed;
+	private long lastUsed;
 	
-	@ManyToMany(targetEntity = Tweet.class, cascade = { CascadeType.ALL })
+	@ManyToMany
 	@JoinTable(name = "tags_tweets", 
 				joinColumns = { @JoinColumn(name = "tag_id") }, 
 				inverseJoinColumns = { @JoinColumn(name = "tweet_id") })
 	private Set<Tweet> tweets;
+
+	public Tag() {
+	}
+
+	public Tag(String label, long firstUsed, long lastUsed, Set<Tweet> tweets) {
+		this.label = label;
+		this.firstUsed = firstUsed;
+		this.lastUsed = lastUsed;
+		this.tweets = tweets;
+	}
 
 	public long getId() {
 		return id;
@@ -45,20 +53,30 @@ public class Tag {
 		this.label = label;
 	}
 
-	public String getFirstUsed() {
+	public long getFirstUsed() {
 		return firstUsed;
 	}
 
-	public void setFirstUsed(String firstUsed) {
+	public void setFirstUsed(long firstUsed) {
 		this.firstUsed = firstUsed;
 	}
 
-	public String getLastUsed() {
+	public long getLastUsed() {
 		return lastUsed;
 	}
 
-	public void setLastUsed(String lastUsed) {
+	public void setLastUsed(long lastUsed) {
 		this.lastUsed = lastUsed;
 	}
+
+	public Set<Tweet> getTweets() {
+		return tweets;
+	}
+
+	public void setTweets(Set<Tweet> tweets) {
+		this.tweets = tweets;
+	}
+
+
 
 }
