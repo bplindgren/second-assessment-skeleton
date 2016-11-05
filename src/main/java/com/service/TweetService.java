@@ -59,4 +59,14 @@ public class TweetService {
 	public Tweet findById(long id) {
 		return tweetRepo.findOne(id);
 	}
+	
+	public Tweet deleteTweet(long id, Credentials credentials) throws Exception {
+		Tweet tweet = findById(id);
+		if (tweet.getAuthor().getCredentials().getPassword().equals(credentials.getPassword())) {
+			tweet.setActive(false);
+			return tweetRepo.saveAndFlush(tweet);
+		} else {
+			return null;
+		}
+	}
 }

@@ -26,7 +26,6 @@ public class Tweet {
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
-	@JsonIgnore
 	private User author;
 	
 	private long posted;
@@ -63,6 +62,7 @@ public class Tweet {
 		this.posted = l;
 	}
 
+	@JsonIgnore
 	public User getAuthor() {
 		return author;
 	}

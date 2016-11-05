@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -41,12 +43,16 @@ public class User {
 	@OneToMany(mappedBy="author")  
 	private Set<Tweet> tweets;
 	
-	@OneToMany
-	@JsonIgnore
+	@ManyToMany
+	@JoinTable(name = "followings", 
+	 			joinColumns = { @JoinColumn(name = "follower_id") }, 
+	 			inverseJoinColumns = { @JoinColumn(name = "following_id") })
 	private Set<User> follows;
 	
-	@OneToMany
-	@JsonIgnore
+	@ManyToMany
+	@JoinTable(name = "followings", 
+	 			joinColumns = { @JoinColumn(name = "id") }, 
+	 			inverseJoinColumns = { @JoinColumn(name = "follower_id") })
 	private Set<User> followers;
 
 	public long getId() {
@@ -105,6 +111,7 @@ public class User {
 		this.tweets = tweets;
 	}
 
+	@JsonIgnore
 	public Set<User> getFollows() {
 		return follows;
 	}
@@ -113,6 +120,7 @@ public class User {
 		this.follows = follows;
 	}
 
+	@JsonIgnore
 	public Set<User> getFollowers() {
 		return followers;
 	}

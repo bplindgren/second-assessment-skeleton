@@ -55,39 +55,68 @@ public class UserService {
 	@Transactional
 	public User updateUser(String username, User updatedUser) throws Exception {
 		User user = findByUsername(username);
-		user.setUsername(updatedUser.getUsername());
+		
+		user.setUsername(updatedUser.getCredentials().getUsername());
 		user.setCredentials(updatedUser.getCredentials());
 		user.setProfile(updatedUser.getProfile());
-		return userRepository.save(user);
+		return userRepository.saveAndFlush(user);
 	}
 	
-	@Transactional
-	public User deleteUser(String username, Credentials credentials) {
-    	User user = userRepository.findByUsername(username);
+	public User deleteUser(String username, Credentials credentials) throws Exception {
+    	User user = findByUsername(username);
     	
     	if (user.getCredentials().getPassword().equals(credentials.getPassword())) {
     		user.setActive(false);
-    		userRepository.save(user);
+    		userRepository.saveAndFlush(user);
     		return user;
     	} 
     	return user;
 	}
 	
 	@Transactional
-	public User createFollowing(String username, Credentials credentials) throws Exception {
+	public void createFollowing(String username, Credentials credentials) throws Exception {
     	User user = this.findByUsername(username);
-    	System.out.println(credentials.getUsername());
     	User userToFollow = this.findByUsername(credentials.getUsername());
-    	
-    	System.out.println(user);
-    	System.out.println(userToFollow);
     	
     	user.getFollowers().add(userToFollow);
     	userToFollow.getFollows().add(user);
     	
+    	userRepository.saveAndFlush(user);
     	userRepository.saveAndFlush(userToFollow);
-    	return userRepository.saveAndFlush(user);
     	
     }
+	
+	@Transactional
+	public void deleteFollowing(String username, Credentials credentials) throws Exception {
+		User user = this.findByUsername(username);
+		User userToUnfollow = this.findByUsername(credentials.getUsername());
+		
+		user.getFollowers().remove(userToUnfollow);
+		userToUnfollow.getFollows().remove(user);
+		
+		userRepository.saveAndFlush(user);
+		userRepository.saveAndFlush(userToUnfollow);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<User> getFollowers(String username) throws Exception {
+		return (List<User>) findByUsername(username).getFollowers();
+	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

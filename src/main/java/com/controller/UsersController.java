@@ -54,12 +54,31 @@ public class UsersController {
     }
     
     @DeleteMapping("/@{username}")
-    public User deleteUser(@PathVariable String username, @RequestBody Credentials credentials) {
+    public User deleteUser(@PathVariable String username, @RequestBody Credentials credentials) throws Exception {
     	return userService.deleteUser(username, credentials);
     }
 
     @PostMapping("/@{username}/follow")
-    public User createFollowing(@PathVariable String username, @RequestBody Credentials credentials) throws Exception {
-    	return userService.createFollowing(username, credentials);
+    public void createFollowing(@PathVariable String username, @RequestBody Credentials credentials) throws Exception {
+    	userService.createFollowing(username, credentials);
     }
+    
+    @PostMapping("/@{username}/unfollow")
+    public void deleteFollowing(@PathVariable String username, @RequestBody Credentials credentials) throws Exception {
+    	userService.deleteFollowing(username, credentials);
+    }
+    
+    @GetMapping("/@{username}/followers")
+    public List<User> getFollowers(@PathVariable String username) throws Exception {
+    	return userService.getFollowers(username);
+    }
+    
+//    @GetMapping("/@{username}/following")
+//    public List<User> getFollowing(@PathVariable String username) throws Exception {
+//    	return userService.getFollowing(username);
+//    }
+      
+    
+    
+    
 }
