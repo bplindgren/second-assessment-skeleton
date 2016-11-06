@@ -26,19 +26,21 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@Column(unique=true)
+	@Column(unique=true, nullable=false)
 	private String username;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn
 	private Profile profile;
 
+	@Column(nullable = false)
 	private long joined;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn
 	private Credentials credentials;
 	
+	@Column(nullable = false)
 	private boolean active;
 	
 	@OneToMany(mappedBy="author")  

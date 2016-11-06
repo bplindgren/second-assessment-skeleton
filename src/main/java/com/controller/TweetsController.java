@@ -27,13 +27,13 @@ public class TweetsController {
 		this.tweetService = tweetService;
 	}
 
-	public TweetService getTweetService() {
-		return tweetService;
-	}
-
-	public void setTweetService(TweetService tweetService) {
-		this.tweetService = tweetService;
-	}
+//	public TweetService getTweetService() {
+//		return tweetService;
+//	}
+//
+//	public void setTweetService(TweetService tweetService) {
+//		this.tweetService = tweetService;
+//	}
 	
 	@GetMapping
 	public List<Tweet> getTweets() {

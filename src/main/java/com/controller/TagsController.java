@@ -20,13 +20,13 @@ public class TagsController {
 		this.tagService = tagService;
 	}
 
-	public TagService getTagService() {
-		return tagService;
-	}
-
-	public void setTagService(TagService tagService) {
-		this.tagService = tagService;
-	}
+//	public TagService getTagService() {
+//		return tagService;
+//	}
+//
+//	public void setTagService(TagService tagService) {
+//		this.tagService = tagService;
+//	}
 
 	@GetMapping
 	public List<Tag> findAll() {

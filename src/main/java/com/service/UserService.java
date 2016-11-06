@@ -1,5 +1,8 @@
 package com.service;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -42,15 +45,28 @@ public class UserService {
 	
 	@Transactional
 	public User createUser(User newUser) throws Exception {
+		// Get the credentials for the new user, see if they are an inactive user
+		Credentials credentials = newUser.getCredentials();
 		
-		String username = newUser.getCredentials().getUsername();
-		Date date = new Date();
-
-		newUser.setUsername(username);
-		newUser.setActive(true);
-		newUser.setJoined(date.getTime());
-		
-		return userRepository.saveAndFlush(newUser);
+		// If the user exists in the database but active = false
+//		if (userRepository.findByCredentialsUsernameAndCredentialsPasswordAndActiveFalse(
+//				credentials.getUsername(), credentials.getUsername()) != null) {
+//			User user = userRepository.findByCredentialsUsernameAndCredentialsPassword(
+//					credentials.getUsername(), credentials.getUsername());
+//			user.setActive(true);
+//			userRepository.save(user);
+//			return user;
+//		} else { // Create a new user
+			String username = newUser.getCredentials().getUsername();
+			
+			Date date = new Date();
+	
+			newUser.setUsername(username);
+			newUser.setActive(true);
+			newUser.setJoined(date.getTime());
+			
+			return userRepository.saveAndFlush(newUser);
+//		}
 		
 	}
 	
@@ -98,6 +114,28 @@ public class UserService {
 		
 		userRepository.saveAndFlush(user);
 		userRepository.saveAndFlush(userToUnfollow);
+	}
+	
+	public List<Tweet> getFeed(String username) throws Exception {
+		// Create a List to store the user's tweets and followings tweets
+		List<Tweet> feed = new ArrayList<Tweet>();
+		
+		// Get the user's tweets and add them to the feed
+		List<Tweet> userTweets = getTweets(username);
+		for (Tweet tweet : userTweets) {
+			feed.add(tweet);
+		}
+		
+		// Get the users that the user follows
+		Set<User> followings = getFollowing(username);
+		for (User user : followings) {
+			List<Tweet> followerTweets = getTweets(user.getUsername());
+			for (Tweet tweet : followerTweets) {
+				feed.add(tweet);
+			}
+		}
+		
+		return feed;		
 	}
 	
 	public List<Tweet> getTweets(String username) throws Exception {

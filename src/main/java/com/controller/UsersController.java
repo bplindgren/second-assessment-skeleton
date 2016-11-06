@@ -1,6 +1,7 @@
 package com.controller;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -28,13 +29,13 @@ public class UsersController {
 		this.userService = userService;
 	}
 
-	public UserService getUserService() {
-		return userService;
-	}
-
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
+//	public UserService getUserService() {
+//		return userService;
+//	}
+//
+//	public void setUserService(UserService userService) {
+//		this.userService = userService;
+//	}
 	
 	@GetMapping
 	public List<User> findAll() {
@@ -71,7 +72,21 @@ public class UsersController {
     	userService.deleteFollowing(username, credentials);
     }
     
-//    @GetMapping("/@{username}/feed")
+    @GetMapping("/@{username}/feed")
+    public List<Tweet> getFeed(@PathVariable String username) throws Exception {
+    	List<Tweet> feed = userService.getFeed(username);
+
+    	// Get the tweets in the correct order
+    	Comparator<Tweet> comparator = new Comparator<Tweet>() {
+    		@Override public int compare(Tweet t1, Tweet t2) {
+    			return (int) (t2.getPosted() - t1.getPosted());
+    		}
+    	};
+    	
+    	Collections.sort(feed, comparator);
+
+    	return feed;
+    }
     
     @GetMapping("/@{username}/tweets")
     public List<Tweet> getTweets(@PathVariable String username) throws Exception {
@@ -94,6 +109,5 @@ public class UsersController {
     public Set<User> getFollowing(@PathVariable String username) throws Exception {
     	return userService.getFollowing(username);
     }
-    
     
 }
