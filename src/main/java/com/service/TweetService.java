@@ -62,7 +62,7 @@ public class TweetService {
 			tweetRepo.saveAndFlush(newTweet);
 			
 			createTags(tweet.getContent(), newTweet.getId());
-//			createMentions(tweet.getContent());
+			createMentions(tweet.getContent(), newTweet.getId());
 	
 			return newTweet;
 		} else {
@@ -119,6 +119,18 @@ public class TweetService {
 		}
 	}
 	
+	public Set<User> getMentions(long id) {
+		Tweet tweet = tweetRepo.findByIdAndActiveTrue(id);
+		if (tweet != null) {
+			return tweet.getMentionedUsers();
+		} else {
+			return null;
+		}
+	}
+	
+	
+	// ========================= //
+	
 	public void createTags(String content, long id) {
 		Pattern tagPattern = Pattern.compile("#(\\w+)");
 		Matcher matcher = tagPattern.matcher(content);
@@ -141,6 +153,22 @@ public class TweetService {
 				t.getTweets().add(tweet);
 				tagRepo.saveAndFlush(t);
 			}
+		}
+	}
+	
+	public void createMentions(String content, long id) {
+		Pattern tagPattern = Pattern.compile("@(\\w+)");
+		Matcher matcher = tagPattern.matcher(content);
+		List<String> mentions = new ArrayList<String>();
+		while (matcher.find()) {
+			mentions.add(matcher.group(1));
+		}
+		
+		for (String mention : mentions) {
+			Tweet tweet = tweetRepo.getOne(id);
+			User user = userRepo.findByUsername(mention);
+			user.getMentions().add(tweet);
+			userRepo.saveAndFlush(user);
 		}
 	}
 	

@@ -44,6 +44,9 @@ public class Tweet {
 	@ManyToMany(mappedBy="likedTweets")
 	private Set<User> likers;
 	
+	@ManyToMany(mappedBy="mentions")
+	private Set<User> mentionedUsers;
+	
 	public long getId() {
 		return id;
 	}
@@ -118,5 +121,16 @@ public class Tweet {
 	public void setLikers(Set<User> likers) {
 		this.likers = likers;
 	}
+
+	@JsonIgnore
+	public Set<User> getMentionedUsers() {
+		return mentionedUsers;
+	}
+
+	public void setMentionedUsers(Set<User> mentionedUsers) {
+		this.mentionedUsers = mentionedUsers;
+	}
+	
+	
 	
 }

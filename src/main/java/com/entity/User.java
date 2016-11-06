@@ -58,6 +58,12 @@ public class User {
 	 			joinColumns = { @JoinColumn(name = "liker_id") }, 
 	 			inverseJoinColumns = { @JoinColumn(name = "tweet_id") })
 	private Set<Tweet> likedTweets;
+	
+	@ManyToMany
+	@JoinTable(name = "mentions", 
+	 			joinColumns = { @JoinColumn(name = "mentioned_id") }, 
+	 			inverseJoinColumns = { @JoinColumn(name = "tweet_id") })
+	private Set<Tweet> mentions;
 
 	public long getId() {
 		return id;
@@ -141,5 +147,15 @@ public class User {
 	public void setLikedTweets(Set<Tweet> likedTweets) {
 		this.likedTweets = likedTweets;
 	}
+
+	@JsonIgnore
+	public Set<Tweet> getMentions() {
+		return mentions;
+	}
+
+	public void setMentions(Set<Tweet> mentions) {
+		this.mentions = mentions;
+	}
+	
 	
 }

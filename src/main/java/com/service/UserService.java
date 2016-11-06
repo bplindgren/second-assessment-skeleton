@@ -104,6 +104,10 @@ public class UserService {
 		return findByUsername(username).getTweets();
 	}
 	
+	public Set<Tweet> getMentions(String username) throws Exception {
+		return findByUsername(username).getMentions();
+	}
+	
 	public Set<User> getFollowing(String username) throws Exception {
 		return findByUsername(username).getFollowing();
 	}

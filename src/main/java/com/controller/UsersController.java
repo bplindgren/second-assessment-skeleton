@@ -71,11 +71,18 @@ public class UsersController {
     	userService.deleteFollowing(username, credentials);
     }
     
+//    @GetMapping("/@{username}/feed")
+    
     @GetMapping("/@{username}/tweets")
     public List<Tweet> getTweets(@PathVariable String username) throws Exception {
     	List<Tweet> tweets = userService.getTweets(username);
     	Collections.reverse(tweets);
     	return tweets;
+    }
+    
+    @GetMapping("/@{username}/mentions")
+    public Set<Tweet> getMentions(@PathVariable String username) throws Exception {
+    	return userService.getMentions(username);
     }
     
     @GetMapping("/@{username}/followers")
@@ -87,5 +94,6 @@ public class UsersController {
     public Set<User> getFollowing(@PathVariable String username) throws Exception {
     	return userService.getFollowing(username);
     }
+    
     
 }

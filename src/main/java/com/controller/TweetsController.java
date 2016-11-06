@@ -60,6 +60,10 @@ public class TweetsController {
 		return tweetService.createLike(id, credentials);
 	}
 	
+//	@PostMapping("/{id}/reply")
+	
+//	@PostMapping("/{id}/repost")
+	
 	@GetMapping("/{id}/tags")
 	public Set<Tag> getTags(@PathVariable long id) {
 		return tweetService.getTags(id);
@@ -69,5 +73,16 @@ public class TweetsController {
 	public Set<User> getLikers(@PathVariable long id) {
 		return tweetService.getLikers(id);
 	}
+	
+	@GetMapping("/{id}/mentions")
+	public Set<User> getMentions(@PathVariable long id) {
+		return tweetService.getMentions(id);
+	}
+	
+//	@GetMapping("/{id}/context")
+	
+//	@GetMapping("/{id}/replies")
+	
+//	@GetMapping("/{id}/mentions")
 		
 }
