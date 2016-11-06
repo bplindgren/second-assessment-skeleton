@@ -1,5 +1,6 @@
 package com.entity;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -9,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,10 +31,10 @@ public class Tweet {
 	
 	private String content;
 	
-	@OneToOne
+	@ManyToOne
 	private Tweet inReplyTo;
 	
-	@OneToOne
+	@ManyToOne
 	private Tweet repostOf;
 	
 	private boolean active;
@@ -46,6 +47,12 @@ public class Tweet {
 	
 	@ManyToMany(mappedBy="mentions")
 	private Set<User> mentionedUsers;
+	
+	@OneToMany(mappedBy="inReplyTo")
+	private List<Tweet> replies;
+	
+	@OneToMany(mappedBy="repostOf")
+	private List<Tweet> reposts;
 	
 	public long getId() {
 		return id;
@@ -130,7 +137,23 @@ public class Tweet {
 	public void setMentionedUsers(Set<User> mentionedUsers) {
 		this.mentionedUsers = mentionedUsers;
 	}
-	
-	
+
+	@JsonIgnore
+	public List<Tweet> getReplies() {
+		return replies;
+	}
+
+	public void setReplies(List<Tweet> replies) {
+		this.replies = replies;
+	}
+
+	@JsonIgnore
+	public List<Tweet> getReposts() {
+		return reposts;
+	}
+
+	public void setReposts(List<Tweet> reposts) {
+		this.reposts = reposts;
+	}
 	
 }

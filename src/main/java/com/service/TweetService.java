@@ -101,6 +101,38 @@ public class TweetService {
 		}
 	}
 	
+	public Tweet createReply(long id, TweetRequest newTweet) {
+		// Get the tweet being replied to
+		Tweet tweetRepliedTo = tweetRepo.findByIdAndActiveTrue(id);
+		
+		// Create the new tweet
+		Tweet replyTweet = createTweet(newTweet);
+		
+		// Set the 'inReplyTo' value of the replyTweet to 'tweetRepliedTo'
+		replyTweet.setInReplyTo(tweetRepliedTo);
+		
+		tweetRepo.saveAndFlush(replyTweet);
+		
+		return replyTweet;
+	}
+	
+	public Tweet createRepost(long id, Credentials credentials) {
+		// Get the tweet being reposted
+		Tweet tweetReposted = tweetRepo.findByIdAndActiveTrue(id);
+		
+		// Create a tweet request object and create the new tweet repost
+		String content = tweetReposted.getContent();
+		TweetRequest tweetRequest = new TweetRequest(credentials, content);
+		Tweet repost = createTweet(tweetRequest);
+		
+		// Set the 'repostOf' value to the repost to 'tweetReposted'
+		repost.setRepostOf(tweetReposted);
+		
+		tweetRepo.saveAndFlush(repost);
+		
+		return repost;
+	}
+	
 	public Set<Tag> getTags(long id) {
 		Tweet tweet = tweetRepo.findByIdAndActiveTrue(id);
 		if (tweet != null) {
@@ -114,6 +146,24 @@ public class TweetService {
 		Tweet tweet = tweetRepo.findByIdAndActiveTrue(id);
 		if (tweet != null) {
 			return tweet.getLikers();
+		} else {
+			return null;
+		}
+	}
+	
+	public List<Tweet> getReplies(long id) {
+		Tweet tweet = tweetRepo.findByIdAndActiveTrue(id);
+		if (tweet != null) {
+			return tweet.getReplies();
+		} else {
+			return null;
+		}
+	}
+	
+	public List<Tweet> getReposts(long id) {
+		Tweet tweet = tweetRepo.findByIdAndActiveTrue(id);
+		if (tweet != null) {
+			return tweet.getReposts();
 		} else {
 			return null;
 		}

@@ -60,9 +60,15 @@ public class TweetsController {
 		return tweetService.createLike(id, credentials);
 	}
 	
-//	@PostMapping("/{id}/reply")
+	@PostMapping("/{id}/reply")
+	public Tweet createReply(@PathVariable long id, @RequestBody TweetRequest newTweet) {
+		return tweetService.createReply(id, newTweet);
+	}
 	
-//	@PostMapping("/{id}/repost")
+	@PostMapping("/{id}/repost")
+	public Tweet createRepost(@PathVariable long id, @RequestBody Credentials credentials) {
+		return tweetService.createRepost(id, credentials);
+	}
 	
 	@GetMapping("/{id}/tags")
 	public Set<Tag> getTags(@PathVariable long id) {
@@ -81,8 +87,13 @@ public class TweetsController {
 	
 //	@GetMapping("/{id}/context")
 	
-//	@GetMapping("/{id}/replies")
+	@GetMapping("/{id}/replies")
+	public List<Tweet> getReplies(@PathVariable long id) {
+		return tweetService.getReplies(id);
+	}
 	
-//	@GetMapping("/{id}/mentions")
-		
+	@GetMapping("/{id}/reposts")
+	public List<Tweet> getReposts(@PathVariable long id) {
+		return tweetService.getReposts(id);
+	}
 }
