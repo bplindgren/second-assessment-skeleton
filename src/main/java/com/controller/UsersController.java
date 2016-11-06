@@ -84,7 +84,6 @@ public class UsersController {
     	};
     	
     	Collections.sort(feed, comparator);
-
     	return feed;
     }
     

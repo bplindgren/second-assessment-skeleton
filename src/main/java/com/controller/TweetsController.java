@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.entity.Context;
 import com.entity.Credentials;
 import com.entity.Tag;
 import com.entity.Tweet;
@@ -47,7 +48,7 @@ public class TweetsController {
 	
 	@GetMapping("/{id}")
 	public Tweet findById(@PathVariable long id) throws Exception {
-		return tweetService.findByIdAndActiveTrue(id);
+		return tweetService.findTweet(id);
 	}
 	
 	@DeleteMapping("/{id}/delete")
@@ -85,7 +86,10 @@ public class TweetsController {
 		return tweetService.getMentions(id);
 	}
 	
-//	@GetMapping("/{id}/context")
+	@GetMapping("/{id}/context")
+	public Context getContext(@PathVariable long id) {
+		return tweetService.getContext(id);
+	}
 	
 	@GetMapping("/{id}/replies")
 	public List<Tweet> getReplies(@PathVariable long id) {

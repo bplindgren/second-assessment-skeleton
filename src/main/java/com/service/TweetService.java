@@ -2,6 +2,7 @@ package com.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.EmptyStackException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,6 +12,7 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.entity.Context;
 import com.entity.Credentials;
 import com.entity.Tag;
 import com.entity.Tweet;
@@ -70,25 +72,28 @@ public class TweetService {
 		}
 	}
 	
-	public Tweet findByIdAndActiveTrue(long id) {
-		return tweetRepo.findOne(id);
-	}
-	
-	public Tweet deleteTweet(long id, Credentials credentials) throws Exception {
-		Tweet tweet = findByIdAndActiveTrue(id);
-		if (tweet.getAuthor().getCredentials().getPassword().equals(credentials.getPassword())) {
-			tweet.setActive(false);
-			return tweetRepo.saveAndFlush(tweet);
+	public Tweet findTweet(long id) {
+		Tweet tweet = tweetRepo.findByIdAndActiveTrue(id);
+		if (tweet == null) {
+			throw new EmptyStackException();
 		} else {
-			return null;
+			return tweet;
 		}
 	}
 	
+	public Tweet deleteTweet(long id, Credentials credentials) throws Exception {
+		Tweet tweet = findTweet(id);
+		tweet.getAuthor().getCredentials().getPassword().equals(credentials.getPassword());
+		tweet.setActive(false);
+		return tweetRepo.saveAndFlush(tweet);
+
+	}
+	
 	public Tweet createLike(long id, Credentials credentials) {
-		Tweet tweet = findByIdAndActiveTrue(id);
+		Tweet tweet = findTweet(id);
 		User user = userRepo.findByCredentialsUsernameAndCredentialsPassword(credentials.getUsername(), credentials.getPassword());
 		
-		if (tweet != null && user != null) {
+		if (user != null) {
 			tweet.getLikers().add(user);
 			user.getLikedTweets().add(tweet);
 			
@@ -103,7 +108,7 @@ public class TweetService {
 	
 	public Tweet createReply(long id, TweetRequest newTweet) {
 		// Get the tweet being replied to
-		Tweet tweetRepliedTo = tweetRepo.findByIdAndActiveTrue(id);
+		Tweet tweetRepliedTo = findTweet(id);
 		
 		// Create the new tweet
 		Tweet replyTweet = createTweet(newTweet);
@@ -118,7 +123,7 @@ public class TweetService {
 	
 	public Tweet createRepost(long id, Credentials credentials) {
 		// Get the tweet being reposted
-		Tweet tweetReposted = tweetRepo.findByIdAndActiveTrue(id);
+		Tweet tweetReposted = findTweet(id);
 		
 		// Create a tweet request object and create the new tweet repost
 		String content = tweetReposted.getContent();
@@ -134,71 +139,90 @@ public class TweetService {
 	}
 	
 	public Set<Tag> getTags(long id) {
-		Tweet tweet = tweetRepo.findByIdAndActiveTrue(id);
-		if (tweet != null) {
-			return tweet.getTags();
-		} else {
-			return null;
-		}
+		Tweet tweet = findTweet(id);
+		return tweet.getTags();
 	}
 	
 	public Set<User> getLikers(long id) {
+		Tweet tweet = findTweet(id);
+		return tweet.getLikers();
+	}
+	
+	public Context getContext(long id) {
+		Context context = new Context();
 		Tweet tweet = tweetRepo.findByIdAndActiveTrue(id);
 		if (tweet != null) {
-			return tweet.getLikers();
+			context.setTweet(tweet);
+			
+			// Get the before chain
+			List<Tweet> before = new ArrayList<Tweet>();
+			while (tweet.getInReplyTo() != null) {
+				Tweet tweetRepliedTo = tweet.getInReplyTo();
+				if (tweetRepliedTo.isActive()) {
+					before.add(tweetRepliedTo);					
+				}
+				tweet = tweetRepliedTo;
+			}
+			
+			context.setBefore(before);
+			
+			// Get the after chain
+			List<Tweet> after = new ArrayList<Tweet>();
+			for (Tweet t : tweet.getReplies()) {
+				if (t.isActive()) {
+					after.add(t);
+				}
+			}
+			
+			context.setAfter(after);
+			
+			return context;
 		} else {
 			return null;
 		}
 	}
 	
 	public List<Tweet> getReplies(long id) {
-		Tweet tweet = tweetRepo.findByIdAndActiveTrue(id);
-		if (tweet != null) {
-			return tweet.getReplies();
-		} else {
-			return null;
-		}
+		Tweet tweet = findTweet(id);
+		return tweet.getReplies();
 	}
 	
 	public List<Tweet> getReposts(long id) {
-		Tweet tweet = tweetRepo.findByIdAndActiveTrue(id);
-		if (tweet != null) {
-			return tweet.getReposts();
-		} else {
-			return null;
-		}
+		Tweet tweet = findTweet(id);
+		return tweet.getReposts();
 	}
 	
 	public Set<User> getMentions(long id) {
-		Tweet tweet = tweetRepo.findByIdAndActiveTrue(id);
-		if (tweet != null) {
-			return tweet.getMentionedUsers();
-		} else {
-			return null;
-		}
+		Tweet tweet = findTweet(id);
+		return tweet.getMentionedUsers();
 	}
 	
 	
 	// ========================= //
 	
 	public void createTags(String content, long id) {
+		// set up pattern and empty list
 		Pattern tagPattern = Pattern.compile("#(\\w+)");
 		Matcher matcher = tagPattern.matcher(content);
 		List<String> tags = new ArrayList<String>();
+		
+		// add tags to the list
 		while (matcher.find()) {
 			tags.add(matcher.group(1));
 		}
 		
+		// for each tag...
 		for (String tag : tags) {
 			Tag t = tagRepo.findByLabel(tag);
 			Date date = new Date();
 			Tweet tweet = tweetRepo.findByIdAndActiveTrue(id);
+			// if the tag is not already in the list, downcase it, add the tweet to its list of tweets, and save
 			if (t == null) {
 				Set<Tweet> tweetsList = new HashSet<Tweet>();
 				Tag newTag = new Tag(tag.toLowerCase(), date.getTime(), date.getTime(), tweetsList);
 				newTag.getTweets().add(tweet);
 				tagRepo.saveAndFlush(newTag);
-			} else {
+			} else { // otherwise, update lastUsed and save 
 				t.setLastUsed(date.getTime());
 				t.getTweets().add(tweet);
 				tagRepo.saveAndFlush(t);
@@ -207,13 +231,17 @@ public class TweetService {
 	}
 	
 	public void createMentions(String content, long id) {
+		// create the pattern and empty list
 		Pattern tagPattern = Pattern.compile("@(\\w+)");
 		Matcher matcher = tagPattern.matcher(content);
 		List<String> mentions = new ArrayList<String>();
+		
+		// add mentions to the list
 		while (matcher.find()) {
 			mentions.add(matcher.group(1));
 		}
 		
+		// for each mention, get tweet and user, save necessary data
 		for (String mention : mentions) {
 			Tweet tweet = tweetRepo.getOne(id);
 			User user = userRepo.findByUsername(mention);
