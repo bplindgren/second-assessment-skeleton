@@ -88,6 +88,7 @@ public class Tweet {
 		this.content = content;
 	}
 
+	@JsonIgnore
 	public Tweet getInReplyTo() {
 		return inReplyTo;
 	}

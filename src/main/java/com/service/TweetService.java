@@ -147,8 +147,10 @@ public class TweetService {
 	}
 	
 	public Context getContext(long id) {
+		// Create context and get tweet
 		Context context = new Context();
-		Tweet tweet = tweetRepo.findByIdAndActiveTrue(id);
+		Tweet tweet = findTweet(id);
+		
 		if (tweet != null) {
 			context.setTweet(tweet);
 			
@@ -166,7 +168,10 @@ public class TweetService {
 			
 			// Get the after chain
 			List<Tweet> after = new ArrayList<Tweet>();
-			for (Tweet t : tweet.getReplies()) {
+			// This line is needed to recapture the original tweet again
+			Tweet tweet1 = findTweet(id);
+			
+			for (Tweet t : tweet1.getReplies()) {
 				if (t.isActive()) {
 					after.add(t);
 				}

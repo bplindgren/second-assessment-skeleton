@@ -49,14 +49,14 @@ public class UserService {
 		Credentials credentials = newUser.getCredentials();
 		
 		// If the user exists in the database but active = false
-//		if (userRepository.findByCredentialsUsernameAndCredentialsPasswordAndActiveFalse(
-//				credentials.getUsername(), credentials.getUsername()) != null) {
-//			User user = userRepository.findByCredentialsUsernameAndCredentialsPassword(
-//					credentials.getUsername(), credentials.getUsername());
-//			user.setActive(true);
-//			userRepository.save(user);
-//			return user;
-//		} else { // Create a new user
+		if (userRepository.findByCredentialsUsernameAndCredentialsPasswordAndActiveFalse(
+				credentials.getUsername(), credentials.getPassword()) != null) {
+			User user = userRepository.findByCredentialsUsernameAndCredentialsPassword(
+					credentials.getUsername(), credentials.getPassword());
+			user.setActive(true);
+			userRepository.save(user);
+			return user;
+		} else { // Create a new user
 			String username = newUser.getCredentials().getUsername();
 			
 			Date date = new Date();
@@ -66,7 +66,7 @@ public class UserService {
 			newUser.setJoined(date.getTime());
 			
 			return userRepository.saveAndFlush(newUser);
-//		}
+		}
 		
 	}
 	
