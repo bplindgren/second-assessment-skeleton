@@ -117,7 +117,6 @@ public class TweetService {
 		replyTweet.setInReplyTo(tweetRepliedTo);
 		
 		tweetRepo.saveAndFlush(replyTweet);
-		
 		return replyTweet;
 	}
 	
@@ -130,11 +129,10 @@ public class TweetService {
 		TweetRequest tweetRequest = new TweetRequest(credentials, content);
 		Tweet repost = createTweet(tweetRequest);
 		
-		// Set the 'repostOf' value to the repost to 'tweetReposted'
+		// Set the 'repostOf' value to the repost 'tweetReposted'
 		repost.setRepostOf(tweetReposted);
 		
 		tweetRepo.saveAndFlush(repost);
-		
 		return repost;
 	}
 	

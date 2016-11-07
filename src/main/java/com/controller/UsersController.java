@@ -28,14 +28,6 @@ public class UsersController {
 	public UsersController(UserService userService) {
 		this.userService = userService;
 	}
-
-//	public UserService getUserService() {
-//		return userService;
-//	}
-//
-//	public void setUserService(UserService userService) {
-//		this.userService = userService;
-//	}
 	
 	@GetMapping
 	public List<User> findAll() {
@@ -74,24 +66,12 @@ public class UsersController {
     
     @GetMapping("/@{username}/feed")
     public List<Tweet> getFeed(@PathVariable String username) throws Exception {
-    	List<Tweet> feed = userService.getFeed(username);
-
-    	// Get the tweets in the correct order
-    	Comparator<Tweet> comparator = new Comparator<Tweet>() {
-    		@Override public int compare(Tweet t1, Tweet t2) {
-    			return (int) (t2.getPosted() - t1.getPosted());
-    		}
-    	};
-    	
-    	Collections.sort(feed, comparator);
-    	return feed;
+    	return userService.getFeed(username);
     }
     
     @GetMapping("/@{username}/tweets")
     public List<Tweet> getTweets(@PathVariable String username) throws Exception {
-    	List<Tweet> tweets = userService.getTweets(username);
-    	Collections.reverse(tweets);
-    	return tweets;
+    	return userService.getTweets(username);
     }
     
     @GetMapping("/@{username}/mentions")

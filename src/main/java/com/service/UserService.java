@@ -1,8 +1,8 @@
 package com.service;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
-
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -70,13 +70,13 @@ public class UserService {
 		
 	}
 	
-	@Transactional
 	public User updateUser(String username, User updatedUser) throws Exception {
 		User user = findByUsername(username);
 		
 		user.setUsername(updatedUser.getCredentials().getUsername());
 		user.setCredentials(updatedUser.getCredentials());
 		user.setProfile(updatedUser.getProfile());
+		
 		return userRepository.saveAndFlush(user);
 	}
 	
@@ -91,7 +91,6 @@ public class UserService {
     	return user;
 	}
 	
-	@Transactional
 	public void createFollowing(String username, Credentials credentials) throws Exception {
     	User user = this.findByUsername(username);
     	User userToFollow = this.findByUsername(credentials.getUsername());
@@ -104,7 +103,6 @@ public class UserService {
     	
     }
 	
-	@Transactional
 	public void deleteFollowing(String username, Credentials credentials) throws Exception {
 		User user = this.findByUsername(username);
 		User userToUnfollow = this.findByUsername(credentials.getUsername());
@@ -129,17 +127,30 @@ public class UserService {
 		// Get the users that the user follows
 		Set<User> followings = getFollowing(username);
 		for (User user : followings) {
+			// For each user that's being following, get their tweets
 			List<Tweet> followerTweets = getTweets(user.getUsername());
+			// Add their tweets to the feed
 			for (Tweet tweet : followerTweets) {
 				feed.add(tweet);
 			}
 		}
 		
+		// Sort the tweets in the correct order
+    	Comparator<Tweet> comparator = new Comparator<Tweet>() {
+    		@Override public int compare(Tweet t1, Tweet t2) {
+    			return (int) (t2.getPosted() - t1.getPosted());
+    		}
+    	};
+    	
+    	Collections.sort(feed, comparator);
+		
 		return feed;		
 	}
 	
 	public List<Tweet> getTweets(String username) throws Exception {
-		return findByUsername(username).getTweets();
+		List<Tweet> tweets = findByUsername(username).getTweets();
+		Collections.reverse(tweets);
+    	return tweets;
 	}
 	
 	public Set<Tweet> getMentions(String username) throws Exception {
@@ -155,19 +166,3 @@ public class UserService {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
