@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.entity.Context;
@@ -27,7 +26,6 @@ import com.repository.UserRepository;
 @Service
 public class TweetService {
 	
-	@Autowired
 	private TweetRepository tweetRepo;
 	private UserRepository userRepo;
 	private TagRepository tagRepo;
@@ -49,14 +47,15 @@ public class TweetService {
 		if (author != null) {
 			Date date = new Date();
 			
+			// Set all the properties of the tweet and save it
 			Tweet newTweet = new Tweet();
 			newTweet.setAuthor(author);
 			newTweet.setContent(tweet.getContent());
 			newTweet.setPosted(date.getTime());
 			newTweet.setActive(true);
-			
 			tweetRepo.saveAndFlush(newTweet);
 			
+			// Create/update any tags or mentions that were in the tweet
 			createTags(tweet.getContent(), newTweet.getId());
 			createMentions(tweet.getContent(), newTweet.getId());
 	
@@ -77,15 +76,19 @@ public class TweetService {
 	
 	public Tweet deleteTweet(long id, Credentials credentials) throws Exception {
 		Tweet tweet = findTweet(id);
-		tweet.getAuthor().getCredentials().getPassword().equals(credentials.getPassword());
-		tweet.setActive(false);
-		return tweetRepo.saveAndFlush(tweet);
+		if (tweet.getAuthor().getCredentials().getPassword().equals(credentials.getPassword())) {			
+			tweet.setActive(false);
+			return tweetRepo.saveAndFlush(tweet);
+		} else {
+			return null;
+		}
 
 	}
 	
 	public Tweet createLike(long id, Credentials credentials) {
 		Tweet tweet = findTweet(id);
-		User user = userRepo.findByCredentialsUsernameAndCredentialsPassword(credentials.getUsername(), credentials.getPassword());
+		User user = userRepo.findByCredentialsUsernameAndCredentialsPassword(
+				credentials.getUsername(), credentials.getPassword());
 		
 		if (user != null) {
 			tweet.getLikers().add(user);
@@ -167,7 +170,6 @@ public class TweetService {
 			
 			// Call recursive function to get all replies and replies of replies
 			List<Tweet> replies = getRepliesOfReplies(tweet1, after);
-			
 			context.setAfter(replies);
 			
 			return context;

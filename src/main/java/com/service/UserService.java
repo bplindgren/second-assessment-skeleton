@@ -9,7 +9,6 @@ import java.util.Set;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.entity.Credentials;
@@ -20,7 +19,6 @@ import com.repository.UserRepository;
 @Service
 public class UserService {
 
-	@Autowired
 	private UserRepository userRepository;
 
 	public UserService(UserRepository userRepo) {
@@ -58,7 +56,6 @@ public class UserService {
 			return user;
 		} else { // Create a new user
 			String username = newUser.getCredentials().getUsername();
-			
 			Date date = new Date();
 	
 			newUser.setUsername(username);
@@ -143,7 +140,6 @@ public class UserService {
     	};
     	
     	Collections.sort(feed, comparator);
-		
 		return feed;		
 	}
 	
