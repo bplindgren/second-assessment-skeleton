@@ -1,6 +1,8 @@
 package com.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.EmptyStackException;
 import java.util.HashSet;
@@ -36,14 +38,6 @@ public class TweetService {
 		this.tagRepo = tagRepo;
 	}
 	
-	public TweetRepository getTweetRepo() {
-		return tweetRepo;
-	}
-
-	public void setTweetRepo(TweetRepository tweetRepo) {
-		this.tweetRepo = tweetRepo;
-	}
-
 	public List<Tweet> getTweets() {
 		return tweetRepo.findAll();
 	}
@@ -163,7 +157,7 @@ public class TweetService {
 				}
 				tweet = tweetRepliedTo;
 			}
-			
+			Collections.reverse(before);
 			context.setBefore(before);
 			
 			// Get the after chain
@@ -171,13 +165,10 @@ public class TweetService {
 			// This line is needed to recapture the original tweet again
 			Tweet tweet1 = findTweet(id);
 			
-			for (Tweet t : tweet1.getReplies()) {
-				if (t.isActive()) {
-					after.add(t);
-				}
-			}
+			// Call recursive function to get all replies and replies of replies
+			List<Tweet> replies = getRepliesOfReplies(tweet1, after);
 			
-			context.setAfter(after);
+			context.setAfter(replies);
 			
 			return context;
 		} else {
@@ -253,6 +244,28 @@ public class TweetService {
 		}
 	}
 	
+	public List<Tweet> getRepliesOfReplies(Tweet tweet, List<Tweet> list) {
+		// for each tweet in a tweet's replies
+		for (Tweet subTweet : tweet.getReplies()) {
+			// if it has replies, add the tweet to the list and get their replies
+			if (subTweet.getReplies().size() > 0) {
+				list.add(subTweet);
+				getRepliesOfReplies(subTweet, list);
+			} else { // else, add tweetto list. done.
+				list.add(subTweet);
+			}
+		}
+		
+		// Sort the tweets in the correct order
+    	Comparator<Tweet> comparator = new Comparator<Tweet>() {
+    		@Override public int compare(Tweet t1, Tweet t2) {
+    			return (int) (t1.getPosted() - t2.getPosted());
+    		}
+    	};
+    	
+    	Collections.sort(list, comparator);
+		return list;
+	}
 }
 
 

@@ -73,11 +73,6 @@ public class TweetsController {
 		return tweetService.getLikers(id);
 	}
 	
-	@GetMapping("/{id}/mentions")
-	public Set<User> getMentions(@PathVariable long id) {
-		return tweetService.getMentions(id);
-	}
-	
 	@GetMapping("/{id}/context")
 	public Context getContext(@PathVariable long id) {
 		return tweetService.getContext(id);
@@ -91,5 +86,10 @@ public class TweetsController {
 	@GetMapping("/{id}/reposts")
 	public List<Tweet> getReposts(@PathVariable long id) {
 		return tweetService.getReposts(id);
+	}
+	
+	@GetMapping("/{id}/mentions")
+	public Set<User> getMentions(@PathVariable long id) {
+		return tweetService.getMentions(id);
 	}
 }

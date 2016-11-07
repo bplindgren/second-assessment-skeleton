@@ -3,6 +3,7 @@ package com.entity;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -28,6 +29,7 @@ public class Tweet {
 	@JoinColumn(nullable=false)
 	private User author;
 	
+	@Column(nullable = false)
 	private long posted;
 	
 	private String content;
@@ -38,6 +40,7 @@ public class Tweet {
 	@ManyToOne
 	private Tweet repostOf;
 	
+	@Column(nullable = false)
 	private boolean active;
 	
 	@ManyToMany(mappedBy="tweets")
